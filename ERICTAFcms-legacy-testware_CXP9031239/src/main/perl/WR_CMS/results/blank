@@ -1,0 +1,4 @@
+This dummy file is required as the legacy tests assume the results dir will exist.
+
+If the results dir is left empty, the dir will be ignored and therefore when
+the test suite is extracted the results dir will not get created.

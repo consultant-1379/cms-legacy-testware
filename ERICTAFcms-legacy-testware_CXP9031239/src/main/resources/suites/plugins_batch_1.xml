@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="plugins_legacy">
+
+    <parameter name="taf.data-provider" value="plugins_legacy" />
+
+    <test name="plugins_legacy">
+        <classes>
+            <class name="com.ericsson.oss.cms.test.legacy.LegacyAutomationRunner" />
+        </classes>
+    </test>
+
+</suite>

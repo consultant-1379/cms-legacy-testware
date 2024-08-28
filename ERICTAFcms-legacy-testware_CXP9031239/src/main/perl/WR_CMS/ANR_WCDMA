@@ -1,0 +1,181 @@
+sub FUT0015 # 1.15.4 Add ANR event for the creating, modifying and deleting of MO
+{
+  my $time = sleep_start_time();
+  log_registry("TC Start time $time :: $smlog_time :: $_[0]\n");
+  my ($test_slogan, $testcase_logfile, $testcase_logfile_snad) = @_;
+  my $tc_info = "Test Case WRANCM_CMSNead_1A_R_1.15.4; Add ANR event for the creating of LTE EUtranCellRelation MO; Normal;1";
+
+  $test_slogan = "$test_slogan"."-"."$tc_info";
+  log_registry("$tc_info");
+  my $ERBS = "";
+  my $ipAdd = "";
+
+  my ($count,@nes) = get_CMS_mo("ENodeBFunction");
+
+  # Option 1 for cloud where nodes always the same if we know newest ipv4 LTE node
+  # my($count2,@RET) = select_mo_cs(MO => "ENodeBFunction", ATTR => "eNBId", VAL => "11", KEY => "11");
+  # log_registry("Got this $count2 , @RET");
+
+  log_registry("Pick every 3rd ERBS to check  ");
+  my $i;
+  my @every_third = grep {not ++$i % 3} @nes; # Pick every 3rd element from @nes
+
+  if($count)
+	{
+  	my @NE; # 			      # Go through smaller list of ERBS's
+  	for my $rrr (@every_third)
+  	 {
+                log_registry("whats rrr -> $rrr");
+                my $mecontext = get_mec($rrr);
+
+                log_registry("2. $mecontext ");
+
+    		if (!(grep {$_ =~ $mecontext}@NE))
+   		 {
+    		 push(@NE,$mecontext);
+    		 my %result = get_mo_attributes_CS( mo => $mecontext, attributes => "ipAddress neMIMversion");
+    		 $ipAdd = $result{ipAddress};
+    		 $neMIMversion = $result{neMIMversion};
+		 # log_registry("4 $ipAdd :: $neMIMversion");
+    	         if ($ipAdd =~ m/\./ && $neMIMversion =~ m/vD/)  # Don't pick a ipv6 address && $neMIMversion D.1
+			{
+			 my $sync = get_synch_status($mecontext);
+   	   			if ($sync == 3 )
+   	   				{
+					$ERBS=$mecontext;
+					log_registry("Got a ipv4 address $ERBS , $ipAdd and its synched $sync");
+			 		last;
+					} 
+			}
+		else { log_registry("its... address, $ipAdd "); } 
+		}
+
+    	  }
+	}
+  else
+	{
+        log_registry("Error : did get any ERBS Of version D.1 in the CS, check version being searched for in TC!!!!!");
+        test_failed($test_slogan);
+        return;
+	}
+
+  my ($result,$sim,$node) = get_sim_info("$ERBS");
+
+  log_registry("Picked this : $ERBS");
+
+  if($ERBS )
+  {
+    my $mec = get_mec($ERBS );
+    get_mo_attr($mec,"ipAddress");
+    log_registry("ERBS => $ERBS ");
+    my %result = get_mo_attributes_CS(mo => $mec, attributes => "ipAddress");
+    our $ERBS_ip = $result{ipAddress};
+    RCP_files($ERBS_ip);
+  }
+  if($result)
+  {
+   log_registry("Error code is $result, error message is $result_code_NE{$result}");
+   log_registry("Something happened in get_sim_info $rnc");
+   test_failed($test_slogan);
+   return;
+  }
+  else
+  {
+   log_registry("Sim is $sim\nNode is $node");
+   do_netsim_command('\'kertayle:file=\"/netsim/AllMosCreate.mo\";\'',
+   $ERBS, $sim, $node);
+  }
+  sleep (60);
+ my $ANRevents = log_check_event_sybase($time);
+ if($ANRevents)
+ {
+  if ($ANRevents =~ m/ANR EVENT/)
+  {
+    log_registry("Match for ADD ANR EVENT found");
+
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.4; Add ANR event for the creating of LTE EUtranCellRelation MO; Normal; 1", "EUtranCellRelation");
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.7; Add ANR event for the creating of LTE ExternalENodeBFunction MO; Normal; 1 ");
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.10; Add ANR event for the creating of LTE ExternalEUtranCellFDD/TDD MO; Normal; 1 ","ExternalEUtranCell");
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.13; Add ANR event for the creating of LTE TermPointToENB MO; Normal; 1 ","TermPointToENB");
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.22; Add ANR event for the creating of LTE ExternalUtranCellFDD/TDD MO; Normal; 1 ","ExternalUtranCell");
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.23; Add ANR event for the creating of LTE UtranCellRelation MO; Normal; 1","UtranCellRelation");
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.33; Add ANR event for the creating of LTE ExternalGeranCell MO; Normal; 1 ","ExternalGeranCell");
+    parse_event($ANRevents, "ADD", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.34; Add ANR event for the creating of LTE GeranCellRelation MO; Normal; 1 ","GeranCellRelation");
+  }
+ }
+ else
+ {
+   test_failed($test_slogan);
+ }
+
+if($result)
+  {
+   log_registry("Error code is $result, error message is $result_code_NE{$result}");
+   log_registry("Something happened in get_sim_info $rnc");
+   test_failed($test_slogan);
+   return;
+  }
+  else
+  {
+  log_registry("Sim is $sim\nNode is $node");
+   do_netsim_command('\'kertayle:file=\"/netsim/AllMosSet.mo\";\'',
+   $ERBS, $sim, $node);
+  }
+  sleep (60);
+  log_registry("after delete mo's $time");
+
+ $ANRevents = log_check_event_sybase($time);
+
+  log_registry("$ANRevents ");
+
+
+ if($ANRevents)
+ {
+  log_registry("ANR Event Exists");
+  if ($ANRevents =~ m/ANR EVENT/)
+  {
+    log_registry("Match for ANR EVENT found");
+     parse_event($ANRevents, "MODIFY", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.5; Modify ANR event for the modifying of LTE EUtranCellRelation MO; Normal; 1", "EUtranCellRelation");
+     parse_event($ANRevents, "MODIFY", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.8; Modify ANR event for the modifying of LTE ExternalENodeBFunction MO; Normal; 1");
+     parse_event($ANRevents, "MODIFY", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.11; Modify ANR event for the modifying of LTE ExternalEUtranCellFDD/TDD MO; Normal; 1","ExternalEUtranCell");
+parse_event($ANRevents, "MODIFY", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.14; Modify ANR event for the modifying of LTE TermPointToENB MO; Normal; 1", "TermPointToENB");
+
+  }
+ }
+ else
+ {
+ test_failed($test_slogan);
+ }
+if($result)
+  {
+   log_registry("Error code is $result, error message is $result_code_NE{$result}");
+   log_registry("Something happened in get_sim_info $rnc");
+   test_failed($test_slogan);
+   return;
+  }
+  else
+  {
+  log_registry("Sim is $sim\nNode is $node");
+   do_netsim_command('\'kertayle:file=\"/netsim/AllMosDelete.mo\";\'',
+   $ERBS, $sim, $node);
+  }
+  sleep (60);
+ $ANRevents = log_check_event_sybase($time);
+ if($ANRevents)
+ {
+  log_registry("ANR REMOVE Event Exists");
+  if ($ANRevents =~ m/ANR EVENT/)
+  {
+    log_registry("Match for ANR EVENT found");
+     parse_event($ANRevents, "REMOVE", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.6; Remove ANR event for the removal of LTE EUtranCellRelation MO; Normal; 1", "EUtranCellRelation");
+     parse_event($ANRevents, "REMOVE", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.9; Remove ANR event for the removal of LTE ExternalENodeBFunction MO; Normal; 1");
+     parse_event($ANRevents, "EVENT_ANR_NEIGHBCELL_REMOVE", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.12; Remove ANR event for the removal of LTE ExternalEUtranCellFDD/TDD MO; Normal; 1","ExternalEUtranCell");
+     parse_event($ANRevents, "DELETE", $ERBS, "Test Case WRANCM_CMSNead_1A_R_1.15.15; Remove ANR event for the removal of LTE TermPointToENB MO; Normal; 1", "TermPointToENB");
+
+  }
+ }
+ else
+ {
+ log_registry("NO DELTE REMOVE ANR EVENT found....");
+ test_failed($test_slogan);
+ }

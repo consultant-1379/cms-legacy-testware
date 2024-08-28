@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="master_batch_1">
+
+    <parameter name="taf.data-provider" value="master_1" />
+
+    <test name="master_batch_1">
+        <classes>
+            <class name="com.ericsson.oss.cms.test.legacy.LegacyAutomationRunner" />
+        </classes>
+    </test>
+
+</suite>

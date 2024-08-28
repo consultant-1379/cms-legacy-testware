@@ -1,0 +1,100 @@
+CREATE
+(
+   parent "ManagedElement=1,RncFunction=1"
+   identity "CMSAUTO"
+   moType IubLink
+   exception none
+   nrOfAttributes 7
+   userLabel String CMSAUTO
+   rbsId Integer 200
+   rncModuleRef Ref "ManagedElement=1,RncFunction=1,RncModule=1"
+   controlPlaneTransportOption Struct 
+                nrOfElements 2
+                atm Integer 1 
+                ipv4 Integer 1 
+)
+
+CREATE
+(
+   parent "ManagedElement=1,RncFunction=1"
+   identity "CMSAUTO"
+   moType LocationArea
+   exception none
+   nrOfAttributes 2
+   userLabel String CMSAUTO
+   lac Integer 111
+)
+CREATE
+(
+   parent "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO"
+   identity "CMSAUTO"
+   moType RoutingArea
+   exception none
+   nrOfAttributes 2
+   userLabel String CMSAUTO
+   rac Integer 111
+)
+CREATE
+(
+   parent "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO"
+   identity "CMSAUTO"
+   moType ServiceArea
+   exception none
+   nrOfAttributes 2
+   userLabel String CMSAUTO
+   sac Integer 111
+)
+CREATE
+(
+   parent "ManagedElement=1,RncFunction=1"
+   identity "CMSAUTO"
+   moType UtranCell
+   exception none
+   nrOfAttributes 11
+   userLabel String CMSAUTO
+   cId Integer 1011
+   iubLinkRef Ref "ManagedElement=1,RncFunction=1,IubLink=CMSAUTO"
+   localCellId Integer 1000
+   locationAreaRef Ref "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO"
+   routingAreaRef Ref "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO,RoutingArea=CMSAUTO"
+   serviceAreaRef Ref "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO,ServiceArea=CMSAUTO"
+   uarfcnUl Integer 662
+   uarfcnDl Integer 262
+   tCell Integer 1000
+   primaryScramblingCode Integer 11
+   sib1PlmnScopeValueTag Integer 1 
+)
+CREATE
+(
+   parent "ManagedElement=1,RncFunction=1"
+   identity "CMSAUTO1"
+   moType UtranCell
+   exception none
+   nrOfAttributes 11
+   userLabel String CMSAUTO1
+   cId Integer 1012
+   iubLinkRef Ref "ManagedElement=1,RncFunction=1,IubLink=CMSAUTO"
+   localCellId Integer 1000
+   locationAreaRef Ref "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO"
+   routingAreaRef Ref "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO,RoutingArea=CMSAUTO"
+   serviceAreaRef Ref "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO,ServiceArea=CMSAUTO"
+   uarfcnUl Integer 662
+   uarfcnDl Integer 262
+   tCell Integer 1000
+   primaryScramblingCode Integer 11
+   sib1PlmnScopeValueTag Integer 1 
+)
+CREATE
+(
+     parent "ManagedElement=1,RncFunction=1,UtranCell=CMSAUTO"
+     identity CMSAUTO
+     moType UtranRelation
+     exception none
+     nrOfAttributes 5
+     utranCellRef Ref "ManagedElement=1,RncFunction=1,UtranCell=CMSAUTO1"
+     qOffset1sn Integer 8
+     qOffset2sn Integer 8
+     creationTime String "2013-04-12 14:35:08"
+     createdBy String "ANR"
+)
+

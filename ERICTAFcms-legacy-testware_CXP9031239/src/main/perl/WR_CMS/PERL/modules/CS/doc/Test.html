@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>CS::Test - A perl module for accessing the Configuration Service.</title>
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#prerequisites">PREREQUISITES</a></li>
+	<li><a href="#exported_functions">EXPORTED FUNCTIONS</a></li>
+	<ul>
+
+		<li><a href="#get_mo_attributes_cs">get_mo_attributes_CS</a></li>
+		<li><a href="#set_mo_attributes_cs">set_mo_attributes_CS</a></li>
+		<li><a href="#get_class_attributes_cs">get_class_attributes_CS</a></li>
+		<li><a href="#get_mo_list_for_class_cs">get_mo_list_for_class_CS</a></li>
+		<li><a href="#does_mo_exist_cs">does_mo_exist_CS</a></li>
+		<li><a href="#get_mo_children_cs">get_mo_children_CS</a></li>
+		<li><a href="#create_plan">create_plan</a></li>
+		<li><a href="#activate_plan">activate_plan</a></li>
+		<li><a href="#delete_plan">delete_plan</a></li>
+		<li><a href="#does_plan_exist">does_plan_exist</a></li>
+		<li><a href="#create_mo_cs">create_mo_CS</a></li>
+		<li><a href="#delete_mo_cs">delete_mo_CS</a></li>
+		<li><a href="#mo_name_is_ok">mo_name_is_OK</a></li>
+		<li><a href="#attrs_to_get_are_ok">attrs_to_get_are_OK</a></li>
+		<li><a href="#attrs_to_set_are_ok">attrs_to_set_are_OK</a></li>
+		<li><a href="#_result_code_cs">%result_code_CS</a></li>
+		<li><a href="#_result_string_cs">%result_string_CS</a></li>
+	</ul>
+
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>CS::Test - A perl module for accessing the Configuration Service (CS).</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ use lib '/net/atrnjump/share/guitest/perl/lib';
+ use CS::Test;</pre>
+<pre>
+ my $plan = 'my_plan';
+ my $mo   = 'SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01,ManagedElement=1,RncFunction=1,UtranCell=RNC01-10-2';</pre>
+<pre>
+ my %mo_hash = get_mo_attributes_CS( mo =&gt; $mo, plan =&gt; $plan, attributes =&gt; 'cId pwrAdm qRxLevMin locationAreaRef' );</pre>
+<pre>
+ print &quot;$mo\n&quot;;</pre>
+<pre>
+ for my $attr (sort keys %mo_hash)
+ {  
+    printf &quot;   %-30s : %s\n&quot;, $attr, $mo_hash{$attr};
+ }</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>This module is intended for perl script authors who wish to access the Configuration Service (CS).</p>
+<p>The module provides a number of functions which simplify the handling of reading/writing information to/from the CS.</p>
+<p>The functions allow MO creation and deletion; planned area creation and deletion; and the getting and setting of MO attributes.</p>
+<p>
+</p>
+<hr />
+<h1><a name="prerequisites">PREREQUISITES</a></h1>
+<p>Since some of the functions use an external XML parser that is written in C, it may be necessary to set an 
+environment variable (LD_LIBRARY_PATH) so that the C library can be found.</p>
+<p>NOTE - The error message if this variable is not set will be:</p>
+<pre>
+ ld.so.1: /net/atrnjump/share/guitest/perl/bin/perl: fatal: libexpat.so.0: open failed: No such file or directory</pre>
+<p>To set this using a bash shell:</p>
+<pre>
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/net/atrnjump/share/guitest/perl/lib</pre>
+<p>or in csh or tcsh:</p>
+<pre>
+ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/net/atrnjump/share/guitest/perl/lib</pre>
+<p>The XML parser also requires a later version of perl than that which comes with Solaris 8 or 9,
+so when running the scripts, the version of perl used should be that at /net/atrnjump/share/guitest/perl/bin/perl.
+To ensure that this version is used, the first line of the users perl script should be set to:</p>
+<pre>
+ #!/net/atrnjump/share/guitest/perl/bin/perl</pre>
+<p>and invoked using the absolute path to the script, e.g.</p>
+<pre>
+ ./my_script.pl or /home/nmsadm/my_script.pl
+ 
+rather than using</pre>
+<pre>
+ perl my_script.pl</pre>
+<p>since the latter version will use the perl binary found using the PATH environment variable.</p>
+<p>
+</p>
+<hr />
+<h1><a name="exported_functions">EXPORTED FUNCTIONS</a></h1>
+<p>
+</p>
+<h2><a name="get_mo_attributes_cs">get_mo_attributes_CS</a></h2>
+<p>This function returns the requested attributes (or all attributes) for a given MO from the CS.
+The full syntax of the function call is:</p>
+<pre>
+ get_mo_attributes_CS( mo         =&gt; $mo, 
+                       plan       =&gt; $my_plan, 
+                       server     =&gt; &quot;Segment&quot;, 
+                       attributes =&gt; &quot;space separated list of attrs&quot;);</pre>
+<p>The parameters have the following types:</p>
+<dl>
+<dt><strong><a name="item_mo__2d_a_string_indicating_an_mo_fdn_2c_e_2eg_2e__">mo - a string indicating an MO FDN, e.g. 'SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01'</a></strong><br />
+</dt>
+<dt><strong><a name="item_plan__2d_a_string_indicating_a_plan_name_2c_e_2eg_">plan - a string indicating a plan name, e.g. 'my_plan'</a></strong><br />
+</dt>
+<dt><strong><a name="item_server__2d_a_string_indicating_either__27region_27">server - a string indicating either 'Region' or 'Segment', e.g. 'Region'</a></strong><br />
+</dt>
+<dt><strong><a name="item_attributes__2d_a_string_containing_a_space_separat">attributes - a string containing a space separated list of attribute names, e.g. 'cId pwrAdm qRxLevMin'</a></strong><br />
+</dt>
+</dl>
+<p>However, all the parameters are optional, except for 'mo', since there are default values for these.
+The defaults have the effect of fetching all attributes for the given MO, from the valid area, using the Segment CS.
+So, the function may be called with just the MO FDN in the 'mo' parameter, e.g.</p>
+<pre>
+ get_mo_attributes_CS(mo =&gt; &quot;SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01&quot;);</pre>
+<p>and all attributes for this MeContext MO will be fetched from the valid area of the Segment CS.</p>
+<p>If the only attribute wanted was the IP address, then the following could be used:</p>
+<pre>
+ get_mo_attributes_CS(mo =&gt; &quot;SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01&quot;, attributes =&gt; &quot;ipAddress&quot;);</pre>
+<p>The returned values are in the form of a hash, so to access the IP address attribute:</p>
+<pre>
+ my %mo_hash = get_mo_attributes_CS(mo =&gt; &quot;SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01&quot;, attributes =&gt; &quot;ipAddress&quot;);</pre>
+<pre>
+ print &quot;IP address is $mo_hash{ipAddress}\n&quot;;</pre>
+<p>To print out all the MeContext MO attributes:</p>
+<pre>
+ my %mo_hash = get_mo_attributes_CS(mo =&gt; &quot;SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01&quot;);
+ for my $attr (sort keys %mo_hash)
+ {
+   printf &quot;   %-30s : %s\n&quot;, $attr, $mo_hash{$attr};
+ }</pre>
+<p>To fetch attributes from an MO in a Region CS use the 'server' parameter:</p>
+<pre>
+ my %mo_hash = get_mo_attributes_CS(mo =&gt; &quot;SubNetwork=ONRM_RootMo_R,Areas=1,Plmn=PLMN_235_91_2&quot;, server =&gt; &quot;Region&quot;,  attributes =&gt; &quot;mcc mnc mncLength&quot;);</pre>
+<pre>
+ print &quot;PLMN info is $mo_hash{mcc}, $mo_hash{mnc}, $mo_hash{mncLength}\n&quot;;</pre>
+<p>
+</p>
+<h2><a name="set_mo_attributes_cs">set_mo_attributes_CS</a></h2>
+<p>This function sets the requested attributes for a given MO in the CS.
+The full syntax of the function call is:</p>
+<pre>
+ set_mo_attributes_CS( mo         =&gt; $mo, 
+                       plan       =&gt; $my_plan, 
+                       server     =&gt; &quot;Segment&quot;, 
+                       attributes =&gt; &quot;space separated list of name value pairs&quot;);</pre>
+<p>Similar to get_mo_attributes_CS, this function has default values for the 'server' (use Segment CS) and 'plan' (use valid area) 
+parameters, but here the 'mo' and 'attributes' parameters are mandatory.</p>
+<p>The parameter types are as for get_mo_attributes_CS but here the 'attributes' parameter has the type:</p>
+<dl>
+<dt><strong>attributes - a string containing a space separated list of attribute name value pairs, e.g. 'cId 10 pwrAdm 75 qRxLevMin -115'</strong><br />
+</dt>
+</dl>
+<p>The return value is either $result_code_CS{OK} which means that the set worked OK, or a result code indicating the error cause.</p>
+<p>So, to set the userLabel to 'my_RNC';</p>
+<pre>
+ my $result = set_mo_attributes_CS( mo =&gt; &quot;SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01&quot;, attributes =&gt; &quot;userLabel my_RNC&quot; );
+ if ($result)
+ {
+    print &quot;result code is $result\n&quot;;
+ }
+ else
+ {
+    print &quot;Attributes set OK\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="get_class_attributes_cs">get_class_attributes_CS</a></h2>
+<p>This function returns the requested attributes for all MO instances in the given MO class.
+The full syntax of the function call is:</p>
+<pre>
+ get_class_attributes_CS( mo         =&gt; $mo, 
+                          plan       =&gt; $my_plan, 
+                          server     =&gt; &quot;Segment&quot;, 
+                          attributes =&gt; &quot;space separated list of attributes&quot;);</pre>
+<p>As for get_mo_attributes_CS, this function has default values for the 'server' (use Segment CS); 'plan' (use valid area)
+and 'attributes' (get all) parameters, but the 'mo' parameter is mandatory.</p>
+<p>The parameter types are as for get_mo_attributes_CS but here the 'mo' parameter has the type:</p>
+<dl>
+<dt><strong><a name="item_mo__2d_a_string_indicating_an_mo_class_2c_e_2eg_2e">mo - a string indicating an MO class, e.g. 'UtranCell'</a></strong><br />
+</dt>
+</dl>
+<p>The returned values are in the form of a hash, but in this case there are 2 sets of keys, i.e. the hash is of the form:</p>
+<pre>
+ $mo_hash{fdn}{attr} = value</pre>
+<p>where the first key is MO FDN and the second key is the attribute name.</p>
+<p>To print all the qRxLevMin attributes for all UtranCells:</p>
+<pre>
+ my $mo_class = &quot;UtranCell&quot;;
+ my %result = get_class_attributes_CS( mo =&gt; &quot;UtranCell&quot;, attributes =&gt; &quot;qRxLevMin&quot;);</pre>
+<pre>
+ for my $mo (sort keys %result)
+ {
+   print &quot;$mo\n&quot;;</pre>
+<pre>
+   for my $attr (sort keys %{$result{$mo}})
+   {
+      printf &quot;%-30s : %s\n&quot;, $attr, $result{$mo}{$attr};
+   }
+ }</pre>
+<p>
+</p>
+<h2><a name="get_mo_list_for_class_cs">get_mo_list_for_class_CS</a></h2>
+<p>This function returns a list of the MO instances for the given MO class.
+The full syntax of the function call is:</p>
+<pre>
+ get_mo_list_for_class_CS( mo     =&gt; $mo, 
+                           plan   =&gt; $my_plan, 
+                           server =&gt; &quot;Segment&quot;);</pre>
+<p>As for get_mo_attributes_CS, this function has default values for the 'server' (use Segment CS) and 'plan' (use valid area), 
+but the 'mo' parameter is mandatory.</p>
+<p>The parameter types are as for get_mo_attributes_CS but here the 'mo' parameter has the type:</p>
+<dl>
+<dt><strong>mo - a string indicating an MO class, e.g. 'UtranCell'</strong><br />
+</dt>
+</dl>
+<p>The returned values are in the form of an array.</p>
+<p>An example usage is:</p>
+<pre>
+ my @utranCells = get_mo_list_for_class_CS( mo =&gt; &quot;UtranCell&quot; );
+ for my $cell (@utranCells)
+ {
+    print &quot;UtranCell is $cell\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="does_mo_exist_cs">does_mo_exist_CS</a></h2>
+<p>This function returns an indication of the existence of the given MO instance.
+The full syntax of the function call is:</p>
+<pre>
+ does_mo_exist_CS( mo     =&gt; $mo, 
+                   plan   =&gt; $my_plan, 
+                   server =&gt; &quot;Segment&quot;);</pre>
+<p>As for get_mo_attributes_CS, this function has default values for the 'server' (use Segment CS) and 'plan' (use valid area), 
+but the 'mo' parameter is mandatory.</p>
+<p>The parameter types are as for get_mo_attributes_CS.</p>
+<p>The return value is either $result_code_CS{MO_ALREADY_EXISTS} which means that the MO exists, 
+or $result_code_CS{MO_DOESNT_EXIST} indicating that the MO doesn't exist, 
+or a result code indicating the error cause.</p>
+<p>An example usage is:</p>
+<pre>
+ my $result = does_mo_exist_CS( mo =&gt; &quot;SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01&quot; );</pre>
+<pre>
+ if ($result == $result_code_CS{MO_DOESNT_EXIST})
+ {
+   print &quot;MO doesn't exist\n&quot;;
+ }
+ elsif ($result == $result_code_CS{MO_ALREADY_EXISTS})
+ {
+   print &quot;MO exists OK\n&quot;;
+ }
+ else
+ {
+   print &quot;Error code is $result, error message is $result_string_CS{$result}\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="get_mo_children_cs">get_mo_children_CS</a></h2>
+<p>This function returns an array of the children for the given MO instance.
+The full syntax of the function call is:</p>
+<pre>
+ get_mo_children_CS( mo     =&gt; $mo, 
+                     plan   =&gt; $my_plan, 
+                     server =&gt; &quot;Segment&quot;);</pre>
+<p>As for get_mo_attributes_CS, this function has default values for the 'server' (use Segment CS) and 'plan' (use valid area), 
+but the 'mo' parameter is mandatory.</p>
+<p>The parameter types are as for get_mo_attributes_CS.</p>
+<p>The return value is either 'undef' which means that the children are contained in the returned array, 
+or a result code indicating the error cause.</p>
+<p>An example usage is:
+ my ($result, @children) = get_mo_children_CS( mo =&gt; $mo, plan =&gt; $plan );</p>
+<pre>
+ unless ($result)
+ {
+   print &quot;Children are:\n&quot;;
+   print &quot;  $_\n&quot; for @children;
+ }</pre>
+<p>
+</p>
+<h2><a name="create_plan">create_plan</a></h2>
+<p>This function is used to create a planned area in the CS.
+The full syntax of the function call is:</p>
+<pre>
+ create_plan($my_plan);</pre>
+<p>where the parameter type is a string indicating the plan name.</p>
+<p>The return value is either 'undef' which means that the plan was created OK, or a result code indicating the error cause.</p>
+<p>An example usage is:</p>
+<pre>
+ my $result = create_plan(&quot;my_plan&quot;);</pre>
+<pre>
+ if ($result)
+ {
+    print &quot;result code is $result\n&quot;;
+ }
+ else
+ {
+    print &quot;Plan created OK\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="activate_plan">activate_plan</a></h2>
+<p>This function is used to activate a planned area in the CS.
+The full syntax of the function call is:</p>
+<pre>
+ activate_plan($my_plan);</pre>
+<p>where the parameter type is a string indicating the plan name.</p>
+<p>The return value is either 'undef' which means that the plan was activated OK, or a result code indicating the error cause.</p>
+<p>An example usage is:</p>
+<pre>
+ my $result = activate_plan(&quot;my_plan&quot;);</pre>
+<pre>
+ if ($result)
+ {
+    print &quot;result code is $result\n&quot;;
+ }
+ else
+ {
+    print &quot;Plan activated OK\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="delete_plan">delete_plan</a></h2>
+<p>This function is used to delete a planned area in the CS.
+The full syntax of the function call is:</p>
+<pre>
+ delete_plan($my_plan);</pre>
+<p>where the parameter type is a string indicating the plan name.</p>
+<p>The return value is either 'undef' which means that the plan was deleted OK, or a result code indicating the error cause.</p>
+<p>An example usage is:</p>
+<pre>
+ my $result = delete_plan(&quot;my_plan&quot;);</pre>
+<pre>
+ if ($result)
+ {
+    print &quot;result code is $result\n&quot;;
+ }
+ else
+ {
+    print &quot;Plan deleted OK\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="does_plan_exist">does_plan_exist</a></h2>
+<p>This function returns an indication of the existence of the given plan name.
+The full syntax of the function call is:</p>
+<pre>
+ does_plan_exist( $my_plan );</pre>
+<p>where the parameter type is a string indicating the plan name.</p>
+<p>The return value is either 'undef' which means that the plan exists, or a value ($result_code_CS{PLAN_DOESNT_EXIST}) 
+indicating that the plan doesn't exist, or a result code indicating the error cause.</p>
+<p>An example usage is:</p>
+<pre>
+ my $result = does_plan_exist( &quot;my_plan&quot; );</pre>
+<pre>
+ if ($result)
+ {
+    print &quot;Plan doesn't exist, result code is $result, error message is $result_string_CS{$result}\n&quot;;
+ }
+ else
+ {
+    print &quot;Plan exists OK\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="create_mo_cs">create_mo_CS</a></h2>
+<p>This function creates the given MO instance.
+The full syntax of the function call is:</p>
+<pre>
+ create_mo_CS( mo     =&gt; $mo, 
+               plan   =&gt; $my_plan, 
+               server =&gt; &quot;Segment&quot;,
+               attributes =&gt; &quot;space separated list of name value pairs&quot;);</pre>
+<p>As for get_mo_attributes_CS, all the parameters are optional, except for 'mo', since there are default values for these.</p>
+<p>The parameter types are as for set_mo_attributes_CS.</p>
+<p>The attributes parameter is optional, since if none are given then the default values will be used.
+Any mandatory parameters without defaults will be found from the MIM file, i.e. if the type is string then
+the attribute name will also be used as the value; if the type is long, then the minimum value from the MIM file is used.</p>
+<p>Any attributes given in the parameter list will over-ride the default values.</p>
+<p>The return value is either 'undef' which means that the MO was created, or a result code indicating the error cause.</p>
+<p>An example usage is:</p>
+<pre>
+ my $mo = &quot;SubNetwork=ONRM_RootMo_R,SubNetwork=RNC01,MeContext=RNC01,ManagedElement=1,RncFunction=1,UtranCell=my_cell&quot;;</pre>
+<pre>
+ my $result = create_mo_CS( mo =&gt; $mo, plan =&gt; $plan );</pre>
+<pre>
+ if ($result)
+ {
+    print &quot;MO wasn't created, result code is $result, error message is $result_string_CS{$result}\n&quot;;
+ }
+ else
+ {
+   print &quot;MO created OK\n&quot;;</pre>
+<pre>
+ }</pre>
+<p>
+</p>
+<h2><a name="delete_mo_cs">delete_mo_CS</a></h2>
+<p>This function deletes the given MO instance.
+The full syntax of the function call is:</p>
+<pre>
+ delete_mo_CS( mo     =&gt; $mo, 
+               plan   =&gt; $my_plan, 
+               server =&gt; &quot;Segment&quot;);</pre>
+<p>As for get_mo_attributes_CS, this function has default values for the 'server' (use Segment CS) and 'plan' (use valid area), 
+but the 'mo' parameter is mandatory.</p>
+<p>The parameter types are as for get_mo_attributes_CS.</p>
+<p>The return value is either 'undef' which means that the MO was deleted, 
+or a result code indicating the error cause.</p>
+<p>An example usage is:</p>
+<pre>
+ my $result = delete_mo_CS( mo =&gt; $mo );</pre>
+<pre>
+ if ($result)
+ {
+    print &quot;MO wasn't deleted, result code is $result, error message is $result_string_CS{$result}\n&quot;;
+ }
+ else
+ {
+    print &quot;MO was deleted OK\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="mo_name_is_ok">mo_name_is_OK</a></h2>
+<p>This is a utility routine to validate the MO name which takes an MO name and a 
+regular expression as arguments, and returns the name if it is OK, or undef if there is a problem.</p>
+<p>
+</p>
+<h2><a name="attrs_to_get_are_ok">attrs_to_get_are_OK</a></h2>
+<p>This is a utility routine to validate the MO attributes (to get) which takes an attribute string as the argument, 
+and returns the attribute string if it is OK, or undef if there is a problem.</p>
+<p>
+</p>
+<h2><a name="attrs_to_set_are_ok">attrs_to_set_are_OK</a></h2>
+<p>This is a utility routine to validate the MO attributes (to set) which takes an attribute string as the argument, 
+and returns the attribute string if it is OK, or undef if there is a problem.</p>
+<p>
+</p>
+<h2><a name="_result_code_cs">%result_code_CS</a></h2>
+<p>This is a hash containing the result codes returned from the module.
+Allows use of an error string key as a test condition in evaluating results, e.g.</p>
+<pre>
+ my $result = does_mo_exist_CS( mo =&gt; $mo );
+ if ($result == $result_code_CS{MO_DOESNT_EXIST})
+ {
+   print &quot;MO doesn't exist\n&quot;;
+ }</pre>
+<p>
+</p>
+<h2><a name="_result_string_cs">%result_string_CS</a></h2>
+<p>This is a hash containing the result strings returned from the module.
+The string can be accessed by using the result code as the key, i.e.</p>
+<pre>
+ my $result = does_mo_exist_CS( mo =&gt; $mo );
+ print &quot;Result code is $result, message is $result_string_CS{$result}\n&quot;;</pre>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Copyright LM Ericsson Ireland.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p>perl(1).
+
+</p>
+
+</body>
+
+</html>

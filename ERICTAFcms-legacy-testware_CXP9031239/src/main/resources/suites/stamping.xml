@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="stamping">
+
+    <parameter name="taf.data-provider" value="stamping" />
+
+    <test name="stamping">
+        <classes>
+            <class name="com.ericsson.oss.cms.test.legacy.LegacyAutomationRunner" />
+        </classes>
+    </test>
+
+</suite>

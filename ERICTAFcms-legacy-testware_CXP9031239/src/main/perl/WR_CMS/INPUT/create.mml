@@ -1,0 +1,7 @@
+
+.open atrcxb1793/12.2.8/LTE/TDD/LTEC1120x160-FT-TDD-LTE01
+.select LTE01ERBS00103 
+.start
+useattributecharacteristics:switch="off";
+kertayle:file="/netsim/TermPointENB.mo";
+

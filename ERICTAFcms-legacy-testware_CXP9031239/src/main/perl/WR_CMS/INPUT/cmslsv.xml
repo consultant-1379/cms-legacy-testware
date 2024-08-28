@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE Model SYSTEM "/opt/ericsson/arne/etc/arne10_1.dtd">
+<Model version="1" importVersion="10.1">
+<Create>
+      <Site userLabel="SeaHorses">
+<altitude string="0"/>
+<location string="Northum"/>
+<longitude string="0"/>
+<latitude string="0"/>
+<worldTimeZoneId string="GB-Eire"/>
+<freeText string=""/>
+<datum string="wgs84"/>
+</Site>
+      <SubNetwork userLabel="CMSAuto" networkType="4">
+         <Group userLabel="Fesh" groupType="RBSGroup" networkType="WCDMA"/>
+         <ManagedElement sourceType="CELLO">
+            <ManagedElementId string="CMSAuto"/>
+            <primaryType type="RNC"/>
+            <managedElementType types=""/>
+            <associatedSite string="Site=SeaHorses"/>
+            <nodeVersion string=""/>
+            <platformVersion string="Cello 4"/>
+            <swVersion string=""/>
+            <vendorName string="Ericsson"/>
+            <userDefinedState string="Active"/>
+            <managedServiceAvailability int="1"/>
+            <isManaged boolean="true"/>
+            <neMIMVersion string="vL.1.70"/>
+            <connectionStatus string="OFF"/>
+            <Connectivity>
+<DEFAULT>
+                  <emUrl url="http://10.32.185.42:80/em/index.html"/>
+                  <ipAddress ip_v4="10.32.185.42"/>
+                  <hostname string=""/>
+                  <namingUrl string="http://10.32.185.42:80/cello/ior_files/nameroot.ior"/>
+                  <namingPort int="0"/>
+                  <nodeSecurityState state="OFF"/>
+                  <boardId string=""/>
+                  
+                  
+                  
+                  <Protocol number="0">
+<protocolType string="CORBA"/>
+<port int="0"/>
+<protocolVersion string=""/>
+<securityName string=""/>
+<authenticationMethod string=""/>
+<encryptionMethod string=""/>
+<communityString string=""/>
+<context string=""/>
+<namingUrl string="http://10.32.185.42:80/cello/ior_files/nameroot.ior"/>
+<namingPort int="0"/>
+<notificationIRPAgentVersion string="3.2"/>
+<alarmIRPAgentVersion string="3.2"/>
+<notificationIRPNamingContext context="NOTIFICATION_IRP_VERSION_1_1"/>
+<alarmIRPNamingContext context="ALARM_IRP_VERSION_1_1"/>
+</Protocol>
+<Browser>
+                     <browser string=""/>
+                     <browserURL string=""/>
+                     <bookname string=""/>
+                  </Browser>
+               </DEFAULT>
+</Connectivity>
+            <Tss>
+               <Entry>
+                  <System string="CMSAuto"/>
+                  <Type string="NORMAL"/>
+                  <User string="e"/>
+                  <Password string="e"/>
+               </Entry>
+            </Tss>
+         </ManagedElement>
+         <ManagedElement sourceType="CELLO">
+            <ManagedElementId string="CMSAutoRBS"/>
+            <primaryType type="RBS"/>
+            <managedElementType types=""/>
+            <associatedSite string="Site=SeaHorses"/>
+            <nodeVersion string=""/>
+            <platformVersion string="Cello 4"/>
+            <swVersion string=""/>
+            <vendorName string="Ericsson"/>
+            <userDefinedState string="Active"/>
+            <managedServiceAvailability int="1"/>
+            <isManaged boolean="true"/>
+            <neMIMVersion string="vM.1.25"/>
+            <connectionStatus string="ON"/>
+            <Connectivity>
+<DEFAULT>
+                  <emUrl url="http://10.32.185.43:80/em/index.html"/>
+                  <ipAddress ip_v4="10.32.185.43"/>
+                  <hostname string=""/>
+                  <namingUrl string="http://10.32.185.43:80/cello/ior_files/nameroot.ior"/>
+                  <namingPort int="0"/>
+                  <nodeSecurityState state="OFF"/>
+                  <boardId string=""/>
+                  
+                  
+                  
+                  <Protocol number="0">
+<protocolType string="CORBA"/>
+<port int="0"/>
+<protocolVersion string=""/>
+<securityName string=""/>
+<authenticationMethod string=""/>
+<encryptionMethod string=""/>
+<communityString string=""/>
+<context string=""/>
+<namingUrl string="http://10.32.185.43:80/cello/ior_files/nameroot.ior"/>
+<namingPort int="0"/>
+<notificationIRPAgentVersion string="3.2"/>
+<alarmIRPAgentVersion string="3.2"/>
+<notificationIRPNamingContext context="NOTIFICATION_IRP_VERSION_1_1"/>
+<alarmIRPNamingContext context="ALARM_IRP_VERSION_1_1"/>
+</Protocol>
+<Browser>
+                     <browser string=""/>
+                     <browserURL string=""/>
+                     <bookname string=""/>
+                  </Browser>
+               </DEFAULT>
+</Connectivity>
+            <Tss>
+               <Entry>
+                  <System string="CMSAutoRBS"/>
+                  <Type string="NORMAL"/>
+                  <User string="e"/>
+                  <Password string="e"/>
+               </Entry>
+            </Tss>
+<Relationship>
+<AssociableNode TO_FDN="SubNetwork=CMSAuto,Group=Fesh" AssociationType="Group_to_MeContext"/>
+</Relationship>
+            
+         </ManagedElement>
+      </SubNetwork>
+      <ManagedElement sourceType="CELLO">
+         <ManagedElementId string="CMSAutoRXI"/>
+         <primaryType type="RANAG"/>
+         <managedElementType types=""/>
+         <associatedSite string="Site=SeaHorses"/>
+         <nodeVersion string="P4.0"/>
+         <platformVersion string="Cello 4"/>
+         <swVersion string=""/>
+         <vendorName string="Ericsson"/>
+         <userDefinedState string="Active"/>
+         <managedServiceAvailability int="1"/>
+         <isManaged boolean="true"/>
+         <neMIMVersion string="vH.2.5"/>
+         <connectionStatus string="ON"/>
+         <Connectivity>
+<DEFAULT>
+               <emUrl url="http://10.32.185.64:80/em/index.html"/>
+               <ipAddress ip_v4="10.32.185.64"/>
+               <hostname string=""/>
+               <namingUrl string="http://10.32.185.64:80/cello/ior_files/nameroot.ior"/>
+               <namingPort int="0"/>
+               <nodeSecurityState state="OFF"/>
+               <boardId string=""/>
+               
+               
+               
+               <Protocol number="0">
+<protocolType string="CORBA"/>
+<port int="0"/>
+<protocolVersion string=""/>
+<securityName string=""/>
+<authenticationMethod string=""/>
+<encryptionMethod string=""/>
+<communityString string=""/>
+<context string=""/>
+<namingUrl string="http://10.32.185.64:80/cello/ior_files/nameroot.ior"/>
+<namingPort int="0"/>
+<notificationIRPAgentVersion string="3.2"/>
+<alarmIRPAgentVersion string="3.2"/>
+<notificationIRPNamingContext context="NOTIFICATION_IRP_VERSION_1_1"/>
+<alarmIRPNamingContext context="ALARM_IRP_VERSION_1_1"/>
+</Protocol>
+<Browser>
+                  <browser string=""/>
+                  <browserURL string=""/>
+                  <bookname string=""/>
+               </Browser>
+            </DEFAULT>
+</Connectivity>
+         <Tss>
+            <Entry>
+               <System string="CMSAutoRXI"/>
+               <Type string="NORMAL"/>
+               <User string="e"/>
+               <Password string="e"/>
+            </Entry>
+         </Tss>
+      </ManagedElement>
+
+
+
+
+      <ManagedElement sourceType="CELLO">
+         <ManagedElementId string="CMSAutoERBS"/>
+         <primaryType type="ERBS"/>
+         <managedElementType types=""/>
+         <associatedSite string="Site=SeaHorses"/>
+         <nodeVersion string=""/>
+         <platformVersion string=""/>
+         <swVersion string=""/>
+         <vendorName string="Ericsson"/>
+         <userDefinedState string="Active"/>
+         <managedServiceAvailability int="1"/>
+         <isManaged boolean="true"/>
+         <neMIMVersion string="vA.9.40"/>
+         <connectionStatus string="ON"/>
+         <Connectivity>
+            <DEFAULT>
+               <emUrl url="http://10.32.186.101:80/em/index.html"/>
+               <ipAddress ip_v4="10.32.186.101"/>
+               <hostname string=""/>
+               <nodeSecurityState state="OFF"/>
+               <boardId string=""/>
+               <Protocol number="0">
+                  <protocolType string="CORBA"/>
+                  <port int="0"/>
+                  <protocolVersion string="v1.1"/>
+                  <securityName string=""/>
+                  <authenticationMethod string=""/>
+                  <encryptionMethod string=""/>
+                  <communityString string=""/>
+                  <context string=""/>
+                  <namingUrl string="http://10.32.186.101:80/cello/ior_files/nameroot.ior"/>
+                  <namingPort int="0"/>
+                  <notificationIRPAgentVersion string="3.2"/>
+                  <alarmIRPAgentVersion string="3.2"/>
+                  <notificationIRPNamingContext context="NOTIFICATION_IRP_VERSION_1_1"/>
+                  <alarmIRPNamingContext context="ALARM_IRP_VERSION_1_1"/>
+               </Protocol>
+               <Protocol number="1">
+                  <protocolType string="FTP"/>
+                  <port int="21"/>
+                  <protocolVersion string=""/>
+                  <securityName string=""/>
+                  <authenticationMethod string=""/>
+                  <encryptionMethod string=""/>
+                  <communityString string=""/>
+                  <context string=""/>
+                  <namingUrl string=""/>
+                  <namingPort int=""/>
+                  <notificationIRPAgentVersion string=""/>
+                  <alarmIRPAgentVersion string=""/>
+                  <notificationIRPNamingContext context=""/>
+                  <alarmIRPNamingContext context=""/>
+               </Protocol>
+               <Protocol number="2">
+                  <protocolType string="SFTP"/>
+                  <port int="22"/>
+                  <protocolVersion string=""/>
+                  <securityName string=""/>
+                  <authenticationMethod string=""/>
+                  <encryptionMethod string=""/>
+                  <communityString string=""/>
+                  <context string=""/>
+                  <namingUrl string=""/>
+                  <namingPort int=""/>
+                  <notificationIRPAgentVersion string=""/>
+                  <alarmIRPAgentVersion string=""/>
+                  <notificationIRPNamingContext context=""/>
+                  <alarmIRPNamingContext context=""/>
+               </Protocol>
+               <Protocol number="3">
+                  <protocolType string="SSH"/>
+                  <port int="22"/>
+                  <protocolVersion string=""/>
+                  <securityName string=""/>
+                  <authenticationMethod string=""/>
+                  <encryptionMethod string=""/>
+                  <communityString string=""/>
+                  <context string=""/>
+                  <namingUrl string=""/>
+                  <namingPort int=""/>
+                  <notificationIRPAgentVersion string=""/>
+                  <alarmIRPAgentVersion string=""/>
+                  <notificationIRPNamingContext context=""/>
+                  <alarmIRPNamingContext context=""/>
+               </Protocol>
+               <Protocol number="4">
+                  <protocolType string="TELNET"/>
+                  <port int="23"/>
+                  <protocolVersion string=""/>
+                  <securityName string=""/>
+                  <authenticationMethod string=""/>
+                  <encryptionMethod string=""/>
+                  <communityString string=""/>
+                  <context string=""/>
+                  <namingUrl string=""/>
+                  <namingPort int=""/>
+                  <notificationIRPAgentVersion string=""/>
+                  <alarmIRPAgentVersion string=""/>
+                  <notificationIRPNamingContext context=""/>
+                  <alarmIRPNamingContext context=""/>
+               </Protocol>
+               <Browser>
+                  <browser string=""/>
+                  <browserURL string=""/>
+                  <bookname string=""/>
+               </Browser>
+            </DEFAULT>
+         </Connectivity>
+         <Tss>
+            <Entry>
+               <System string="CMSAutoERBS"/>
+               <Type string="SECURE"/>
+               <User string="netsim"/>
+               <Password string="netsim"/>
+            </Entry>
+            <Entry>
+               <System string="CMSAutoERBS"/>
+               <Type string="NORMAL"/>
+               <User string="netsim"/>
+               <Password string="netsim"/>
+            </Entry>
+         </Tss>
+         <Relationship>
+            <AssociableNode TO_FDN="ManagementNode=ONRM" AssociationType="MgmtAssociation"/>
+         </Relationship>
+      </ManagedElement>
+
+   </Create>
+</Model>

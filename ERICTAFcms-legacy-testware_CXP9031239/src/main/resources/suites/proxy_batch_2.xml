@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="proxy_batch_2">
+
+    <parameter name="taf.data-provider" value="proxy_2" />
+
+    <test name="proxy_batch_2">
+        <classes>
+            <class name="com.ericsson.oss.cms.test.legacy.LegacyAutomationRunner" />
+        </classes>
+    </test>
+
+</suite>

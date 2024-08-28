@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE Model SYSTEM "/opt/ericsson/arne/etc/arne10_1.dtd">
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!--                IMPORTANT NOTE                     -->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!--These sample xml files are provided as examples of
+    what an import file should look like. They have been 
+    tested against the following tck packages. 
+    
+    TCKC => R7F03
+    TCKW => R3A02
+    TCKG => R3A01
+    
+    If you are importing using different versions of tck then
+    you will have to update the import files
+-->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<Model version="1" importVersion="10.1">
+  <Delete>
+     <Object fdn="SubNetwork=ONRM_RootMo,MeContext=CMSAutoERBS,ManagedElement=1"/>
+  </Delete>  
+</Model>

@@ -1,0 +1,29 @@
+DELETE
+(
+   mo "ManagedElement=1,RncFunction=1,UtranCell=CMSAUTO,UtranRelation=CMSAUTO"
+)
+DELETE
+(
+   mo "ManagedElement=1,RncFunction=1,UtranCell=CMSAUTO"
+)
+DELETE
+(
+   mo "ManagedElement=1,RncFunction=1,UtranCell=CMSAUTO1"
+)
+DELETE
+(
+   mo "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO,RoutingArea=CMSAUTO"
+)
+DELETE
+(
+   mo "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO,ServiceArea=CMSAUTO"
+)
+DELETE
+(
+   mo "ManagedElement=1,RncFunction=1,LocationArea=CMSAUTO"
+)
+DELETE
+(
+  mo "ManagedElement=1,RncFunction=1,IubLink=CMSAUTO"
+)
+
